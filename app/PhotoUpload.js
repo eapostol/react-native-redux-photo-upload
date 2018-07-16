@@ -1,5 +1,5 @@
 /**
-    Handles picking and uploading
+    Handles picking and uploading images
     TODO:
     - On thumb click, open the full image to edit headline or delete
     - Security, users ID and token
@@ -18,10 +18,10 @@ import {
     Platform
 } from 'react-native'
 
+import { api } from './Server'
+
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer'
-
-// import { server, api } from './Api'
 
 import {
             getThumbList,
@@ -82,29 +82,6 @@ class PhotoUpload extends Component {
         }
     }
 
-    uploadPicture = (photo) => {
-        /**
-            Post the profile pic and thumbnail using axios (in api.js)
-            TODO:   Store thumbs and thumblist locally.
-                    API path. Security and token. Retry on error
-        **/
-
-        api.post('/image/'+this.state.position, photo)
-        .then(() => {
-            this.props.getThumbList()
-            .then((response) => {
-                this.props.setThumbSource(response.payload.data)
-                this.setState({thumbUri: {uri: this.props.thumbSource[this.state.position]}})
-            })
-            .catch((error) => {
-                console.log(this.props.errorText)
-            })
-        })
-        .catch((error) => {
-            console.log(this.props.errorText)
-        })
-    }
-
     openImagePicker = () => {
 
         // get image from image picker
@@ -151,6 +128,36 @@ class PhotoUpload extends Component {
                 });
                 this.uploadPicture(photo);
             })
+        })
+    }
+
+    uploadPicture = (photo) => {
+        /**
+            Post the profile pic and thumbnail using axios (in api.js)
+            TODO:   Store thumbs and thumblist locally.
+                    API path. Security and token. Retry on error
+        **/
+
+        // api.post('/image/'+this.state.position, photo)
+        api.post('', photo)
+        .then(function (response) {
+            // Handle success
+            console.log(response);
+        })
+        .then(() => {
+            // Get thumbnail and replace the placeholder
+            this.props.getThumbList()
+            .then((response) => {
+                this.props.setThumbSource(response.payload.data)
+                this.setState({thumbUri: {uri: this.props.thumbSource[this.state.position]}})
+            })
+            .catch((error) => {
+                console.log(this.props.errorText)
+            })
+        })
+        .catch((error) => {
+            // Handle error
+            console.log(this.props.errorText)
         })
     }
 

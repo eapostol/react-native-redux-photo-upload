@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native'
-import  {   Text,
-            View,
-            TouchableHighlight,
+import  {   View,
             Image,
         } from 'react-native';
+
+import PhotoUpload from './PhotoUpload'
 
 import { connect } from 'react-redux';
 import {
@@ -12,7 +12,6 @@ import {
             setThumbSource
         } from './Redux/GetImage';
 
-import PhotoUpload from './PhotoUpload'
 
 /**
     Mapping the redux state (imported in the storeConfig)
@@ -90,13 +89,9 @@ class Container extends Component {
 
     render() {
 
-        const   {   labelContainer,
-                    labelStyle,
-                } = styles;
-
         return(
             <View>
-                <View style={{flexDirection: "row", paddingBottom: 10}}>
+                <View style={{flexDirection: "row", marginTop: 50}}>
                     {Array(4).fill(1).map((el, i) =>
                         this.renderImagePicker(i)
                     )}
