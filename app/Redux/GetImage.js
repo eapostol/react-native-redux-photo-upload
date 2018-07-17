@@ -18,13 +18,14 @@ export const SET_THUMB_SOURCE_FAIL = 'SET_THUMB_SOURCE_FAIL';
     through middleware so it can handle requests
 **/
 
-export function getThumbList() {
+export function getThumbList(i) {
     return {
         type: GET_THUMB_LIST,
         payload: {
             request: {
                 method: 'GET',
-                url:'/thumbs'
+                url:'/t-'+[i]+'.jpg',
+                responseType: 'blob'
             }
         }
     };
@@ -36,10 +37,10 @@ export function getThumbList() {
     Just define the action type and reduce the response into state
 **/
 
-export function setThumbSource(list) {
+export function setThumbSource(filename) {
     return {
         type: SET_THUMB_SOURCE,
-        payload: list
+        payload: filename
     };
 }
 
@@ -62,9 +63,10 @@ export default function reducer(state = {}, action) {
     case GET_THUMB_LIST_FAIL:
         return {
             ...state,
-            errorText: "Cannot get image list"
+            errorText: " was not available"
         }
     case SET_THUMB_SOURCE:
+    console.log(action.payload)
         return {
             ...state,
             thumbSource: action.payload

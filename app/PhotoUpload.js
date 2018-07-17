@@ -31,6 +31,7 @@ import {
 /**
     Hooking up with the redux store
     that has the list of img uri
+    Uri: the path to the photo within the device's storage
 **/
 
 const mapStateToProps = state => {
@@ -131,33 +132,43 @@ class PhotoUpload extends Component {
         })
     }
 
+    getThumbs = () => {
+        api.get('/t-'+this.state.position+'.jpg')
+        .then((response) => {
+            console.log(response)
+        })
+    }
+
     uploadPicture = (photo) => {
         /**
-            Post the profile pic and thumbnail using axios (in api.js)
+            Post the profile pic and thumbnail using axios api (in Server.js)
             TODO:   Store thumbs and thumblist locally.
                     API path. Security and token. Retry on error
         **/
 
         // api.post('/image/'+this.state.position, photo)
         api.post('', photo)
-        .then(function (response) {
+        .then((response) => {
             // Handle success
             console.log(response);
         })
         .then(() => {
             // Get thumbnail and replace the placeholder
-            this.props.getThumbList()
-            .then((response) => {
-                this.props.setThumbSource(response.payload.data)
-                this.setState({thumbUri: {uri: this.props.thumbSource[this.state.position]}})
-            })
-            .catch((error) => {
-                console.log(this.props.errorText)
-            })
+            // this.props.getThumbList()
+            // .then((response) => {
+            //     this.props.setThumbSource(response.payload.data)
+            //     this.setState({thumbUri: {uri: this.props.thumbSource[this.state.position]}})
+            // })
+            // .catch((error) => {
+            //     console.log(this.props.errorText) //Redux custom error
+            //     console.log(error); //Axios response error
+            // })
+            this.getThumbs()
         })
         .catch((error) => {
             // Handle error
             console.log(this.props.errorText)
+            console.log(error);
         })
     }
 
