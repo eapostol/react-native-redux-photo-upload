@@ -45,12 +45,12 @@ class Container extends Component {
         super(props);
 
         this.state = {
+            pickers: 4,
             thumbDefault: require('./Assets/upload-placeholder.png'),
-            thumbList: [null]
         };
     };
 
-    componentWillMount() {
+    componentDidMount() {
         /**
             Go through the server and get image name. 
             Then store in redux store for global access
@@ -58,25 +58,24 @@ class Container extends Component {
                     If list empty or new photo uploaded, ask server
                     on error -> retry
         **/
-        for (var i = 0; i <= 3; i++) {
+        for (let i = 0; i <= this.state.pickers - 1; i++) {
             this.props.getThumbList(i)
             .then((response) => {
                 console.log('Found photo: ' + response.payload.data._data.name)
                 this.props.setThumbSource(downloadServer+'/'+response.payload.data._data.name)
-                this.setState({ thumbList: [...this.state.thumbList, downloadServer+'/'+response.payload.data._data.name]})
+                // this.setState({ thumbList: [...this.state.thumbList, downloadServer+'/'+response.payload.data._data.name]})
             })
             .catch((error) => {
                 // console.log(this.props.errorText)
-                console.log(this.props.thumbSource)
                 this.props.setThumbSource(null)
-                this.setState({ thumbList: [...this.state.thumbList, null]})
+                // this.setState({ thumbList: [...this.state.thumbList, null]})
             })
         }
     }
 
     setThumbUri = (i) => {
-        if (this.state.thumbList[i]) {
-            return {uri: this.state.thumbList[i]}
+        if (this.props.thumbSource[i]) {
+            return {uri: this.props.thumbSource[i]}
         }
         return this.state.thumbDefault
     }
@@ -100,7 +99,7 @@ class Container extends Component {
         return(
             <View>
                 <View style={{flexDirection: "row", marginTop: 50}}>
-                    {Array(4).fill(1).map((el, i) =>
+                    {Array(this.state.pickers).fill(1).map((el, i) =>
                         this.renderImagePicker(i)
                     )}
                 </View>

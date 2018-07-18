@@ -68,7 +68,7 @@ export default function reducer(state = initialUserStates, action) {
             errorText: "Photo was not available"
         }
     case SET_THUMB_SOURCE:
-        console.log("Redux payload: "+action.payload)
+        console.log("Redux payload: " + action.payload)
         return {
             ...state,
             thumbSource: [...state.thumbSource, action.payload]
