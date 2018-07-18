@@ -138,18 +138,16 @@ class PhotoUpload extends Component {
 
         api.post('', photo)
         .then((response) => {
-            // Handle success
-            console.log(response);
-        })
-        .then(() => {
             this.props.getThumbList(this.state.position)
             .then((response) => {
                 console.log('Uploaded photo: ' + this.state.position)
-                this.setState({thumbUri: {uri: downloadServer+'/'+response.payload.data._data.name}})
+                this.setState({thumbUri: {uri: downloadServer+response.payload.data._data.name}})
+            })
+            .catch((error) => {
+            console.log(this.props.errorText)
             })
         })
         .catch((error) => {
-            // Handle error
             console.log(this.props.errorText)
         })
     }

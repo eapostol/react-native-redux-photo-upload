@@ -62,13 +62,11 @@ class Container extends Component {
             this.props.getThumbList(i)
             .then((response) => {
                 console.log('Found photo: ' + response.payload.data._data.name)
-                this.props.setThumbSource(downloadServer+'/'+response.payload.data._data.name)
-                // this.setState({ thumbList: [...this.state.thumbList, downloadServer+'/'+response.payload.data._data.name]})
+                this.props.setThumbSource(downloadServer+response.payload.data._data.name)
             })
             .catch((error) => {
-                // console.log(this.props.errorText)
+                console.log(this.props.errorText)
                 this.props.setThumbSource(null)
-                // this.setState({ thumbList: [...this.state.thumbList, null]})
             })
         }
     }
