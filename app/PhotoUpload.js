@@ -18,14 +18,13 @@ import {
     Platform
 } from 'react-native'
 
-import { api } from './Server'
+import { api, downloadServer } from './Server'
 
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer'
 
 import {
             getThumbList,
-            setThumbSource
         } from './Redux/GetImage';
 
 /**
@@ -43,8 +42,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getThumbList: () => dispatch(getThumbList()),
-        setThumbSource: (list) => dispatch(setThumbSource(list))
+        getThumbList: (index) => dispatch(getThumbList(index)),
     }
 }
 
@@ -57,7 +55,6 @@ class PhotoUpload extends Component {
     static propTypes = {
         position: PropTypes.number,
         containerStyle: PropTypes.object,
-        photoPickerTitle: PropTypes.string,
         height: PropTypes.number,
         width: PropTypes.number,
         format: PropTypes.string,
@@ -132,13 +129,6 @@ class PhotoUpload extends Component {
         })
     }
 
-    getThumbs = () => {
-        api.get('/t-'+this.state.position+'.jpg')
-        .then((response) => {
-            console.log(response)
-        })
-    }
-
     uploadPicture = (photo) => {
         /**
             Post the profile pic and thumbnail using axios api (in Server.js)
@@ -146,29 +136,21 @@ class PhotoUpload extends Component {
                     API path. Security and token. Retry on error
         **/
 
-        // api.post('/image/'+this.state.position, photo)
         api.post('', photo)
         .then((response) => {
             // Handle success
             console.log(response);
         })
         .then(() => {
-            // Get thumbnail and replace the placeholder
-            // this.props.getThumbList()
-            // .then((response) => {
-            //     this.props.setThumbSource(response.payload.data)
-            //     this.setState({thumbUri: {uri: this.props.thumbSource[this.state.position]}})
-            // })
-            // .catch((error) => {
-            //     console.log(this.props.errorText) //Redux custom error
-            //     console.log(error); //Axios response error
-            // })
-            this.getThumbs()
+            this.props.getThumbList(this.state.position)
+            .then((response) => {
+                console.log('Uploaded photo: ' + this.state.position)
+                this.setState({thumbUri: {uri: downloadServer+'/'+response.payload.data._data.name}})
+            })
         })
         .catch((error) => {
             // Handle error
             console.log(this.props.errorText)
-            console.log(error);
         })
     }
 

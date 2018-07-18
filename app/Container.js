@@ -12,7 +12,7 @@ import {
             setThumbSource
         } from './Redux/GetImage';
 
-import { api, server } from './Server'
+import { downloadServer } from './Server'
 
 
 /**
@@ -46,12 +46,11 @@ class Container extends Component {
 
         this.state = {
             thumbDefault: require('./Assets/upload-placeholder.png'),
-            thumbUri: {}, //cant be null or get an property of type null error
-            thumbList: []
+            thumbList: [null]
         };
     };
 
-    componentDidMount() {
+    componentWillMount() {
         /**
             Go through the server and get image name. 
             Then store in redux store for global access
@@ -63,17 +62,21 @@ class Container extends Component {
             this.props.getThumbList(i)
             .then((response) => {
                 console.log('Found photo: ' + response.payload.data._data.name)
-                this.props.setThumbSource(server+'/'+response.payload.data._data.name)
+                this.props.setThumbSource(downloadServer+'/'+response.payload.data._data.name)
+                this.setState({ thumbList: [...this.state.thumbList, downloadServer+'/'+response.payload.data._data.name]})
             })
             .catch((error) => {
-                console.log(this.props.errorText)
+                // console.log(this.props.errorText)
+                console.log(this.props.thumbSource)
+                this.props.setThumbSource(null)
+                this.setState({ thumbList: [...this.state.thumbList, null]})
             })
         }
     }
 
     setThumbUri = (i) => {
-        if (this.props.thumbSource[i]) {
-            return {uri: this.props.thumbSource[i]}
+        if (this.state.thumbList[i]) {
+            return {uri: this.state.thumbList[i]}
         }
         return this.state.thumbDefault
     }

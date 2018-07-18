@@ -28,7 +28,7 @@ export function getThumbList(i) {
         payload: {
             request: {
                 method: 'GET',
-                url:'/t-'+[i]+'.jpg',
+                url:'http/t-'+[i]+'.jpg',
                 responseType: 'blob'
             }
         }
@@ -51,15 +51,13 @@ export function setThumbSource(filename) {
 /**
     Reducers
     Make a copy of the current state (...state)
-    then set the new value for state with whatever key we want to name it
+    Then set the new value for state with whatever key you name it
     and the data from action.payload
-    Access in component through mapStateToProps with state.getImage.thumbList having
-    the new data
+    Access in component through mapStateToProps
 **/
 export default function reducer(state = initialUserStates, action) {
     switch (action.type) {
     case GET_THUMB_LIST_SUCCESS:
-        // console.log(action.payload.data)
         return { 
             ...state,
             thumbList: action.payload.data
@@ -70,6 +68,7 @@ export default function reducer(state = initialUserStates, action) {
             errorText: "Photo was not available"
         }
     case SET_THUMB_SOURCE:
+        console.log("Redux payload: "+action.payload)
         return {
             ...state,
             thumbSource: [...state.thumbSource, action.payload]
