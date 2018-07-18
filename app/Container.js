@@ -46,14 +46,15 @@ class Container extends Component {
 
         this.state = {
             thumbDefault: require('./Assets/upload-placeholder.png'),
-            thumbList: [],
             thumbUri: {}, //cant be null or get an property of type null error
+            thumbList: []
         };
     };
 
     componentDidMount() {
         /**
-            Iniatiate the image list on component mount
+            Go through the server and get image name. 
+            Then store in redux store for global access
             TODO:   Store the list on local. 
                     If list empty or new photo uploaded, ask server
                     on error -> retry
@@ -61,50 +62,18 @@ class Container extends Component {
         for (var i = 0; i <= 3; i++) {
             this.props.getThumbList(i)
             .then((response) => {
-                console.log(response)
-                this.props.setThumbSource(response.payload.data._data.name)
-                this.setState({ thumbUri: this.props.thumbSource})
+                console.log('Found photo: ' + response.payload.data._data.name)
+                this.props.setThumbSource(server+'/'+response.payload.data._data.name)
             })
             .catch((error) => {
-                console.log('Photo ' + i + this.props.errorText)
+                console.log(this.props.errorText)
             })
         }
-        // this.props.getThumbList()
-        //     .then((response) => {
-        //         this.props.setThumbSource(response.payload.data)
-        //         this.setState({ thumbUri: this.props.thumbSource})
-        //     })
-        //     .catch((error) => {
-        //         console.log(this.props.errorText)
-        //         console.log(error)
-        //     })
-        // this.getThumbs()
-
-        // for (var i = 0; i <= 3; i++) {
-        //     this.getThumbs(i)
-        // }
-    }
-
-    getThumbs = (i) => {
-        api.get('/t-'+[i]+'.jpg', {
-            responseType: 'blob'
-        })
-        .then((response) => {
-            console.log(response)
-            let url = server+'/t-'+[i]+'.jpg'
-            this.setState({
-                thumbList: [...this.state.thumbList, url]
-            })
-        })
-        .catch((error) => {
-            console.log(error)
-            return this.state.thumbDefault
-        })
     }
 
     setThumbUri = (i) => {
-        if (this.state.thumbUri[i]) {
-            return {uri: server+'/t-'+[this.state.thumbUri[i]]+'.jpg'}
+        if (this.props.thumbSource[i]) {
+            return {uri: this.props.thumbSource[i]}
         }
         return this.state.thumbDefault
     }

@@ -1,7 +1,9 @@
 Formdata
 Sending the full sized image and a smaller sized thumbnail
 Fetch thumbs instead of fullsized images on app startup for speed
-Redux with re-ducks pattern and redux-axios-middleware for centralizing payloads and errors
+Redux with re-ducks pattern and redux-axios-middleware:
+- Shared axios calls between views
+- Shared redux store for list of images
 
 git clone
 npm install

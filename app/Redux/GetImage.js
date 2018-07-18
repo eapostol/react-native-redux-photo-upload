@@ -12,6 +12,10 @@ export const GET_THUMB_LIST_FAIL = 'GET_THUMB_LIST_FAIL';
 export const SET_THUMB_SOURCE = 'SET_THUMB_SOURCE';
 export const SET_THUMB_SOURCE_FAIL = 'SET_THUMB_SOURCE_FAIL';
 
+const initialUserStates = {
+    thumbSource: []
+}
+
 /**
     Action creators.
     This has been coupled with axios
@@ -52,7 +56,7 @@ export function setThumbSource(filename) {
     Access in component through mapStateToProps with state.getImage.thumbList having
     the new data
 **/
-export default function reducer(state = {}, action) {
+export default function reducer(state = initialUserStates, action) {
     switch (action.type) {
     case GET_THUMB_LIST_SUCCESS:
         // console.log(action.payload.data)
@@ -63,13 +67,12 @@ export default function reducer(state = {}, action) {
     case GET_THUMB_LIST_FAIL:
         return {
             ...state,
-            errorText: " was not available"
+            errorText: "Photo was not available"
         }
     case SET_THUMB_SOURCE:
-    console.log(action.payload)
         return {
             ...state,
-            thumbSource: action.payload
+            thumbSource: [...state.thumbSource, action.payload]
         }
     case SET_THUMB_SOURCE_FAIL:
         return {
